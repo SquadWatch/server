@@ -43,8 +43,8 @@ export const removeUserFromRoom = (roomId: string, userId: string) => {
     rooms[roomId].connectedUserIds = rooms[roomId].connectedUserIds.filter(id => id !== userId);
     emitToRoom(roomId, "USER_LEAVE", {userId})
 }
-export const emitRoomDetails = (roomId: string, socketId: string) => {
+export const emitRoomDetails = (roomId: string, userId: string, socketId: string) => {
     const participants = rooms[roomId].connectedUserIds.map((id) => {return{id}})
     const creatorId = rooms[roomId].creatorId
-    io.to(socketId).emit("ROOM_DETAILS", {participants, creatorId});
+    io.to(socketId).emit("DETAILS", {room: {participants, creatorId}, me: {id: userId}});
 }

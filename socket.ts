@@ -36,7 +36,7 @@ export const initSocketIO = (server: any) => {
         const roomId = socket.handshake.auth.roomId;
         const user = getUserByToken(token) as User;
         console.log("connected!")
-        emitRoomDetails(roomId, socket.id)
+        emitRoomDetails(roomId, user.id, socket.id)
         socket.on("disconnect", () => {
             console.log("disconnected!")
             removeSocket( user.id, socket.id)
