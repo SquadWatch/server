@@ -15,7 +15,8 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "socket.io": "^4.2.0"
+    "socket.io": "^4.2.0",
+    "youtubei": "^0.0.1-rc.27"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.5"

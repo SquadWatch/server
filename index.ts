@@ -1,6 +1,7 @@
 import http from 'http';
 import express from 'express';
 import { initSocketIO, io } from './socket';
+
 const app = express();
 const server = http.createServer(app);
 
@@ -9,6 +10,7 @@ initSocketIO(server);
 // routes
 import users from './routes/users';
 import rooms from './routes/rooms';
+import search from './routes/search';
 
 
 // setup cors
@@ -27,6 +29,7 @@ app.use((req, res, next) => {
 
 app.use("/api/users", users);
 app.use("/api/rooms", rooms);
+app.use("/api/search", search);
 
 
 
