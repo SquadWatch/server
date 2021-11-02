@@ -1,5 +1,5 @@
 import {Server} from 'socket.io';
-import { addConnectedUserToRoom, debugRooms, emitRoomDetails, getRoom, removeUserFromRoom } from './database/rooms';
+import { addConnectedUserToRoom, debugRooms, emitRoomDetails, getRoom, queueVideo, removeUserFromRoom } from './database/rooms';
 import { addSocketIdToUser, debugUsers, getUserByToken, removeSocket, User } from './database/users';
 
 export let io:Server = null as any;
@@ -43,7 +43,9 @@ export const initSocketIO = (server: any) => {
             if (!user.connectedRoomIds.includes(roomId)) {
                 removeUserFromRoom(roomId, user.id)
             }
-
+        })
+        socket.on("QUEUE_VIDEO", (payload: {videoId: string}) => {
+          queueVideo(roomId, payload.videoId)
         })
       })
       

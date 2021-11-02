@@ -1,4 +1,4 @@
-import { ChannelCompact, Client, VideoCompact } from 'youtubei';
+import { ChannelCompact, Client, Video, VideoCompact } from 'youtubei';
 
 const client = new Client();
 
@@ -25,6 +25,57 @@ export const searchChannelVideos = async (channelId: string) => {
 		)
 	})
 	return results;
+}
+export const getVideoDetails = async (videoId: string) => {
+	const results = await client.getVideo(videoId).then(video => parseVideo(video as any))
+	return results;
+}
+export const getQueueVideoDetails = async (videoId: string) => {
+	const results = await client.getVideo(videoId).then(video => parseQueueVideo(video as any))
+	return results;
+}
+
+
+function parseQueueVideo(item: Video) {
+	const title = item.title;
+	const id = item.id;
+	const thumbnailURL = item.thumbnails.best;
+	return {title, id, thumbnailURL}
+}
+
+function parseVideo(item: Video) {
+	const title = item.title;
+	const thumbnailURL = item.thumbnails.best;
+	const viewCount = item.viewCount;
+	const uploadDate = item.uploadDate;
+	const description = item.description;
+	const likes = item.likeCount
+	const dislikes = item.dislikeCount
+	const videoId = item.id;
+
+	const channelName = item.channel?.name;
+	const channelAvatar = item.channel?.thumbnails?.best;
+	const channelId = item.channel?.id;
+	const subCount = item.channel?.subscriberCount;
+	return {
+		type: 'video',
+		video: {
+			id: videoId,
+			title,
+			description,
+			thumbnailURL,
+			viewCount,
+			uploadDate,
+			likes,
+			dislikes
+		},
+		channel: {
+			id: channelId,
+			name: channelName,
+			avatarURL: channelAvatar,
+			subCount
+		}
+	}
 }
 
 

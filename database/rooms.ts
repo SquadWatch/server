@@ -1,15 +1,27 @@
 import FlakeId from '@brecert/flakeid'
 import { io } from '../socket';
 
+import {getQueueVideoDetails, getVideoDetails} from '../youtubeClient'
 const flake = new FlakeId({
   mid: 42,
   timeOffset: (2013 - 1970) * 31536000 * 1000
 });
 
+type Await<T> = T extends PromiseLike<infer U> ? U : T
+
+
+type QueueVideo = Await<ReturnType<typeof getQueueVideoDetails>>;
+type Video = Await<ReturnType<typeof getVideoDetails>>;
 export interface Room {
   id: string
   creatorId: string
   connectedUserIds: string[]
+  queue: QueueVideo[],
+  nowPlaying: {
+    video: Video | null,
+    startedTimestamp: null | number
+    skipped: number
+  }
 }
 const rooms: { [key: string]: Room } = {};
 
@@ -23,6 +35,12 @@ export const createRoom = (creatorId: string) => {
     id: id,
     creatorId,
     connectedUserIds: [],
+    nowPlaying: {
+      video: null,
+      startedTimestamp: null,
+      skipped: 0
+    },
+    queue: []
   }
   rooms[id] = room;
   return room
@@ -47,4 +65,16 @@ export const emitRoomDetails = (roomId: string, userId: string, socketId: string
     const participants = rooms[roomId].connectedUserIds.map((id) => {return{id}})
     const creatorId = rooms[roomId].creatorId
     io.to(socketId).emit("DETAILS", {room: {participants, creatorId}, me: {id: userId}});
+}
+
+
+export const queueVideo = async (roomId: string, videoId: string) => {
+  const room = rooms[roomId];
+  // nothing is queued, instantly play video
+  if (!room.nowPlaying.video && !room.queue.length) {
+    room.nowPlaying.video = await getVideoDetails(videoId);
+    emitToRoom(room.id, "PREPARE_PLAY_VIDEO", room.nowPlaying)
+    return;
+  }
+
 }
