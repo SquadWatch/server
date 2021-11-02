@@ -45,7 +45,6 @@ function parseQueueVideo(item: Video) {
 
 function parseVideo(item: Video) {
 	const title = item.title;
-	const thumbnailURL = item.thumbnails.best;
 	const viewCount = item.viewCount;
 	const uploadDate = item.uploadDate;
 	const description = item.description;
@@ -58,17 +57,13 @@ function parseVideo(item: Video) {
 	const channelId = item.channel?.id;
 	const subCount = item.channel?.subscriberCount;
 	return {
-		type: 'video',
-		video: {
-			id: videoId,
-			title,
-			description,
-			thumbnailURL,
-			viewCount,
-			uploadDate,
-			likes,
-			dislikes
-		},
+		id: videoId,
+		title,
+		description,
+		viewCount,
+		uploadDate,
+		likes,
+		dislikes,
 		channel: {
 			id: channelId,
 			name: channelName,
@@ -91,13 +86,11 @@ function parseVideoCompact(item: VideoCompact) {
 	const channelId = item.channel?.id;
 	return {
 		type: 'video',
-		video: {
-			id: videoId,
-			title,
-			thumbnailURL,
-			viewCount,
-			uploadDate,
-		},
+		id: videoId,
+		title,
+		thumbnailURL,
+		viewCount,
+		uploadDate,
 		channel: {
 			id: channelId,
 			name: channelName,
